@@ -80,27 +80,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_Update:
                 db=myHelper.getWritableDatabase();
                 values=new ContentValues();
-                values.put("phone",etphone.getText().toString());
-                db.update("info",values,"name=?",new String[]{etname.getText().toString()});
+                values.put("name",etname.getText().toString());
+                values.put("email",etemail.getText().toString());
+                db.update("info",values,"phone=?",new String[]{etphone.getText().toString()});
                 Toast.makeText(this,"update successfully",Toast.LENGTH_SHORT).show();
                 db.close();
                 break;
             case R.id.btn_query:
                 db=myHelper.getWritableDatabase();
-                Cursor cursor=db.query("info",null,null,null,
-                        null,null,null,null);
-                if(cursor.getCount()==0){
+                Cursor cursor=db.rawQuery("select * from info",null);
+                if((cursor.getCount()==0)){
                     Toast.makeText(this,"no query.",Toast.LENGTH_SHORT).show();
+                    cursor.close();
+                    db.close();
+                    return;
                 }
-                else{
-                    cursor.moveToFirst();
-                    tvshow.setText("name:"+cursor.getString(1)+"   phone:"+cursor.getString(2)+"email:"+cursor.getString(3));
+                StringBuilder result = new StringBuilder();
+                while (cursor.moveToNext()) {
+                    result.append(cursor.getColumnName(0));
+                    result.append(" : ");
+                    result.append(cursor.getString(0));
+                    result.append("\n");
+                    result.append(cursor.getColumnName(1));
+                    result.append(" : ");
+                    result.append(cursor.getString(1));
+                    result.append("\n");
+                    result.append(cursor.getColumnName(2));
+                    result.append(" : ");
+                    result.append(cursor.getString(2));
+                    result.append("\n\n");
                 }
-                while(cursor.moveToNext()){
-                    tvshow.append("\n"+"name:"+cursor.getString(1)+"   phone:"+cursor.getString(2)+"   email:"+cursor.getString(3));
-                }
+                ((TextView) findViewById(R.id.txt_show)).setText(result.toString());
                 cursor.close();
                 db.close();
+
+
+//                Cursor cursor=db.query("info",null,null,null,
+//                        null,null,null,null);
+//                if(cursor.getCount()==0){
+//                    Toast.makeText(this,"no query.",Toast.LENGTH_SHORT).show();
+//                }
+//                else{
+//                    cursor.moveToFirst();
+//                    tvshow.setText("name:"+cursor.getString(1)+"   phone:"+cursor.getString(2)+"email:"+cursor.getString(3));
+//                }
+//                while(cursor.moveToNext()){
+//                    tvshow.append("\n"+"name:"+cursor.getString(1)+"   phone:"+cursor.getString(2)+"   email:"+cursor.getString(3));
+//                }
+//                cursor.close();
+//                db.close();
                 //Toast.makeText(this,"query successfully",Toast.LENGTH_SHORT).show();
                 break;
         }

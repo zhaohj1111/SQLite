@@ -8,12 +8,12 @@ import androidx.annotation.Nullable;
 
 public class MyHelper extends SQLiteOpenHelper {
     public MyHelper(@Nullable Context context) {
-        super(context,"mydb1.db", null, 1);
+        super(context,"mydb4.db", null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table info(_id INTEGER PRIMARY KEY AUTOINCREMENT,name varchar(20),email varchar(20),phone varchar(20))");
+        db.execSQL("create table info( name varchar(20),email varchar(20),phone varchar(20) PRIMARY KEY)");
     }
 
     @Override
